@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -11,14 +11,14 @@ import {
   Switch,
   Alert,
 } from 'react-native';
-import {AsyncStorage, Storage} from 'react-native-storage';
+import { AsyncStorage, Storage } from 'react-native-storage';
 import axios from 'axios';
 import {
   requestReadSMSPermission,
   startReadSMS,
 } from 'react-native-sms-receiver/Receiver';
 import DeviceInfo from 'react-native-device-info';
-import {storage} from './InitStroe';
+import { storage } from './InitStroe';
 import SelectDropdown from 'react-native-select-dropdown';
 const Separator = () => <View style={styles.separator} />;
 const Separator1 = () => <View style={styles.separator1} />;
@@ -55,11 +55,15 @@ export default function App() {
             // readMess(mes);
             console.log('mes = ' + mes);
             if (mes.indexOf('เงินเข้า') != -1) {
+              // const index1 = mes.indexOf('เงินเข้า') + 9;
+              // const index2 = mes.indexOf('.', index1) + 3;
+              // // console.log(mes.substring(index1, index2));
+              // const bath = mes.substring(index1, index2);
               const index1 = mes.indexOf('เงินเข้า') + 8;
-              const index2 = mes.indexOf('.', index1) + 3;
-              // console.log(mes.substring(index1, index2));
+              const index2 = mes.indexOf('.', index1) + 4;
               const bath = mes.substring(index1, index2);
-              setAmount('ครั้งล่าสุด : ' + bath + ' บาท');
+              const bath2 = bath.replaceAll(' ', '');
+              setAmount('ครั้งล่าสุด : ' + bath2 + ' บาท');
               setTxtsms(mes);
               axios
                 .get('https://api4.pcdservice.info/device4/' + phoneNumber)
@@ -69,7 +73,7 @@ export default function App() {
                     axios.patch('https://api4.pcdservice.info/device4', {
                       device4_state: '1',
                       device4_tel: phoneNumber,
-                      device4_amount: bath,
+                      device4_amount: bath2,
                     });
                   }
                   setTimeout(() => {
@@ -78,12 +82,19 @@ export default function App() {
                 });
             }
             else if (mes.indexOf('รับโอนจาก') != -1) {
+              // const index1 = mes.indexOf('รับโอนจาก');
+              // const index2 = mes.indexOf(' ', index1) + 1;
+              // const index2s = mes.indexOf(' ', index2) + 1;
+              // const index3 = mes.indexOf('.', index2s) + 3;
+              // const bath = mes.substring(index2s, index3);
+
               const index1 = mes.indexOf('รับโอนจาก');
               const index2 = mes.indexOf(' ', index1) + 1;
-              const index3 = mes.indexOf('.', index2) + 3;
-              const bath = mes.substring(index2, index3);
-
-              setAmount('ครั้งล่าสุด : ' + bath + ' บาท');
+              const index2s = mes.indexOf(' ', index2) + 1;
+              const index3 = mes.indexOf('.', index2s) + 3;
+              const bath = mes.substring(index2s, index3);
+              const bath2 = bath.replaceAll(' ', '');
+              setAmount('ครั้งล่าสุด : ' + bath2 + ' บาท');
               setTxtsms(mes);
 
               axios
@@ -94,7 +105,7 @@ export default function App() {
                     axios.patch('https://api4.pcdservice.info/device4', {
                       device4_state: '1',
                       device4_tel: phoneNumber,
-                      device4_amount: bath,
+                      device4_amount: bath2,
                     });
                   }
                   setTimeout(() => {
@@ -105,7 +116,7 @@ export default function App() {
           }
         });
       }
-    } catch {}
+    } catch { }
   };
 
   useEffect(() => {
